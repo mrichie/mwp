@@ -17,6 +17,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
+    [self showStatusMenu];
 }
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.richie.osx.mwp" in the user's Application Support directory.
@@ -40,6 +41,11 @@
 }
 
 // Returns the persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it. (The directory for the store is created, if necessary.)
+- (IBAction)showPreference:(id)sender {
+    [NSApp activateIgnoringOtherApps:YES];
+    [[self window] makeKeyAndOrderFront:self];
+}
+
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
     if (_persistentStoreCoordinator) {
@@ -178,6 +184,15 @@
     }
 
     return NSTerminateNow;
+}
+
+- (void)showStatusMenu {
+    NSStatusBar *bar = [NSStatusBar systemStatusBar];
+    
+    status_item = [bar statusItemWithLength:NSVariableStatusItemLength];
+    [status_item setTitle:@"MWP"];
+    [status_item setHighlightMode: YES];
+    [status_item setMenu: status_menu];
 }
 
 @end

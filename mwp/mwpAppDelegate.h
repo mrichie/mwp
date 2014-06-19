@@ -8,7 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface mwpAppDelegate : NSObject <NSApplicationDelegate>
+@interface mwpAppDelegate : NSObject <NSApplicationDelegate>{
+    IBOutlet NSMenu *status_menu;
+}
 
 @property (assign) IBOutlet NSWindow *window;
 
@@ -16,6 +18,10 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+- (IBAction)showPreference:(id)sender;
 - (IBAction)saveAction:(id)sender;
 
+
 @end
+
+__strong NSStatusItem *status_item;

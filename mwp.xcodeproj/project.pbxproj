@@ -471,6 +471,7 @@
 				1301753D195082E200F48F50 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1301753E195082E200F48F50 /* Build configuration list for PBXNativeTarget "mwpTests" */ = {
 			isa = XCConfigurationList;
@@ -479,6 +480,7 @@
 				13017540195082E200F48F50 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
