@@ -18,6 +18,9 @@
 {
     // Insert code here to initialize your application
     [self showStatusMenu];
+    [self setUpSegmentControl];
+    [self loadStoreState];
+    [self setTimer];
 }
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.richie.osx.mwp" in the user's Application Support directory.
@@ -140,6 +143,28 @@
     }
 }
 
+- (IBAction)segControlClicked:(id)sender {
+    NSInteger clickedSeg = [sender selectedSegment];
+    NSLog(@"seg : %ld", clickedSeg);
+    NSInteger clicedSegTag = [[sender cell] tagForSegment:clickedSeg];
+    NSLog(@"tag : %ld", (long)clicedSegTag);
+    switch (clickedSeg) {
+        case 0:
+            refreshTimeout = segMin;
+            break;
+        case 1:
+            refreshTimeout = segHour;
+            break;
+        case 2:
+            refreshTimeout = segDay;
+            break;
+        default:
+            break;
+    }
+    [self storeState];
+    [self setTimer];
+}
+
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
     // Save changes in the application's managed object context before the application terminates.
@@ -186,6 +211,14 @@
     return NSTerminateNow;
 }
 
+
+-(void) setUpSegmentControl{
+    [_scChangeWP setSegmentCount:3];
+    [_scChangeWP setLabel:@"Minute" forSegment:0];
+    [_scChangeWP setLabel:@"Hour" forSegment:1];
+    [_scChangeWP setLabel:@"Day" forSegment:2];
+}
+
 - (void)showStatusMenu {
     NSStatusBar *bar = [NSStatusBar systemStatusBar];
     
@@ -195,4 +228,99 @@
     [status_item setMenu: status_menu];
 }
 
+- (void)storeState {
+    NSLog(@"Storing state");
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:refreshTimeout forKey:@"refreshTimeout"];
+    [defaults synchronize];
+}
+
+- (void) loadStoreState{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    refreshTimeout = (int)[defaults integerForKey:@"refreshTimeout"];
+    if(!refreshTimeout)
+    {
+        refreshTimeout = segMin;
+        [self storeState];
+    }
+
+    switch(refreshTimeout){
+        case segMin: [_scChangeWP setSelectedSegment:0]; break;
+        case segHour: [_scChangeWP setSelectedSegment:1]; break;
+        case segDay: [_scChangeWP setSelectedSegment:2]; break;
+        default: [_scChangeWP setSelectedSegment:0];
+    }
+
+    [self setWallPaper];
+}
+
+-(void) changeWallPaper:(NSTimer *)t{
+    activePaperIndex++;
+    if(activePaperIndex >= totalPaper) activePaperIndex = 0;
+    [self setWallPaper];
+}
+
+-(void) setTimer{
+
+        if(!globalTimer)
+                globalTimer = [NSTimer new];
+        [globalTimer invalidate];
+        if(refreshTimeout > 0)
+            globalTimer = [NSTimer scheduledTimerWithTimeInterval: refreshTimeout
+                                                           target: self
+                                                         selector: @selector(changeWallPaper:)
+                                                         userInfo: NULL
+                                                          repeats: YES];
+
+}
+
+- (void) setWallPaper{
+
+    NSString* paperPath = [[NSString alloc] initWithFormat:@"wallpaper/%d.jpg", activePaperIndex];
+    
+    NSLog(@"Loading %@", paperPath);
+    
+    
+    NSString *path = [[NSBundle mainBundle] pathForImageResource:paperPath];
+    NSLog(@"%@", path);
+    if([[NSFileManager defaultManager] fileExistsAtPath: paperPath])
+    {
+        NSLog(@"exist Paper : %@", paperPath);
+        [self setWallpaperImage:paperPath withOptions:@""];
+    }
+}
+
+- (void)setWallpaperImage:(NSString *)filePath withOptions:(NSString *)options
+{
+    NSError *error = nil;
+    NSURL *imageurl = [NSURL fileURLWithPath:filePath];
+    NSLog(@"image URL: %@", [imageurl absoluteString]);
+    
+    Boolean allowClipping = ![options isEqualToString:@"*"];
+    
+    NSDictionary *curOptions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                
+                                NSColor.blackColor,
+                                NSWorkspaceDesktopImageFillColorKey,
+                                
+                                [NSNumber numberWithBool:allowClipping],
+                                NSWorkspaceDesktopImageAllowClippingKey,
+                                
+                                [NSNumber numberWithInteger:NSImageScaleProportionallyUpOrDown],
+                                NSWorkspaceDesktopImageScalingKey,
+                                
+                                nil];
+    
+	NSArray *screens = [NSScreen screens];
+	for (NSScreen *curScreen in screens)
+	{
+        if (![[NSWorkspace sharedWorkspace] setDesktopImageURL: imageurl
+                                                     forScreen: curScreen
+                                                       options: curOptions
+                                                         error: &error])
+        {
+            [NSApp presentError:error];
+        }
+    }
+}
 @end

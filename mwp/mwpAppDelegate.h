@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @interface mwpAppDelegate : NSObject <NSApplicationDelegate>{
+    __weak NSSegmentedControl *_scChangeWp;
     IBOutlet NSMenu *status_menu;
 }
 
@@ -20,8 +21,25 @@
 
 - (IBAction)showPreference:(id)sender;
 - (IBAction)saveAction:(id)sender;
+- (IBAction)segControlClicked:(id)sender;
 
 
+@property (weak) IBOutlet NSSegmentedCell *scChangeWP;
+@property (weak) IBOutlet NSSegmentedControl *scChangeWp;
 @end
 
 __strong NSStatusItem *status_item;
+
+int refreshTimeout = 0;
+
+int activePaperIndex = 1;
+
+int totalPaper = 17;
+
+NSTimer *globalTimer;
+
+const int segMin = 60;
+
+const int segHour = 60 * 60;
+
+const int segDay = 60 * 60 * 24;

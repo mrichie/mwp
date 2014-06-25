@@ -13,6 +13,8 @@
         <customObject id="-3" userLabel="Application"/>
         <customObject id="Voe-Tx-rLC" customClass="mwpAppDelegate">
             <connections>
+                <outlet property="scChangeWP" destination="4xg-4y-blF" id="FbG-zj-46G"/>
+                <outlet property="scChangeWp" destination="sVf-hL-Z3Y" id="dpm-u0-awE"/>
                 <outlet property="status_menu" destination="BGa-hI-N0D" id="OjI-nq-CPk"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
@@ -675,6 +677,34 @@
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sVf-hL-Z3Y">
+                        <rect key="frame" x="131" y="71" width="274" height="24"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <segmentedCell key="cell" alignment="left" style="rounded" trackingMode="selectOne" id="4xg-4y-blF">
+                            <font key="font" metaFont="system"/>
+                            <segments>
+                                <segment width="89"/>
+                                <segment width="89" selected="YES" tag="1"/>
+                                <segment width="88">
+                                    <nil key="label"/>
+                                </segment>
+                            </segments>
+                        </segmentedCell>
+                        <connections>
+                            <action selector="segControlClicked:" target="Voe-Tx-rLC" id="DwK-Tt-uax"/>
+                        </connections>
+                    </segmentedControl>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Tda-o3-WYe">
+                        <rect key="frame" x="20" y="73" width="78" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Interval:" id="mSa-CE-Nt5">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
             </view>
         </window>
         <menu title="Status Menu" id="BGa-hI-N0D">
