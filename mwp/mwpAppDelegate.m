@@ -145,9 +145,6 @@
 
 - (IBAction)segControlClicked:(id)sender {
     NSInteger clickedSeg = [sender selectedSegment];
-    NSLog(@"seg : %ld", clickedSeg);
-    NSInteger clicedSegTag = [[sender cell] tagForSegment:clickedSeg];
-    NSLog(@"tag : %ld", (long)clicedSegTag);
     switch (clickedSeg) {
         case 0:
             refreshTimeout = segMin;
@@ -275,18 +272,13 @@
 }
 
 - (void) setWallPaper{
+    NSString* paperPath = [[NSString alloc] initWithFormat:@"%d", activePaperIndex];
 
-    NSString* paperPath = [[NSString alloc] initWithFormat:@"wallpaper/%d.jpg", activePaperIndex];
-    
-    NSLog(@"Loading %@", paperPath);
-    
-    
-    NSString *path = [[NSBundle mainBundle] pathForImageResource:paperPath];
-    NSLog(@"%@", path);
-    if([[NSFileManager defaultManager] fileExistsAtPath: paperPath])
+    NSString *imagePath = [[NSBundle mainBundle] pathForResource:paperPath ofType:@"jpg"];
+    NSImage* imageObj = [[NSImage alloc] initWithContentsOfFile:imagePath];
+    if(imageObj)
     {
-        NSLog(@"exist Paper : %@", paperPath);
-        [self setWallpaperImage:paperPath withOptions:@""];
+        [self setWallpaperImage:imagePath withOptions:@""];
     }
 }
 
@@ -294,7 +286,6 @@
 {
     NSError *error = nil;
     NSURL *imageurl = [NSURL fileURLWithPath:filePath];
-    NSLog(@"image URL: %@", [imageurl absoluteString]);
     
     Boolean allowClipping = ![options isEqualToString:@"*"];
     
